@@ -6,200 +6,344 @@
     <title>TechPrint - Live Web Technology Scanner</title>
     <style>
         :root {
-            color-scheme: dark;
+            color-scheme: light dark;
+            --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --surface-dark: rgba(22, 33, 63, 0.82);
+            --surface-border-dark: rgba(120, 140, 255, 0.25);
+            --shadow-dark: 0 35px 60px rgba(6, 12, 31, 0.55);
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
             margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at top, #1a2238 0%, #0c1024 50%, #080a18 100%);
+            font-family: var(--font-family);
+            background: radial-gradient(circle at top, #17223c 0%, #0b1021 55%, #060810 100%);
             color: #f4f6ff;
             min-height: 100vh;
+            line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         a {
-            color: #8bb9ff;
-        }
-        #root {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 1.5rem 3rem;
+            color: #9bbcff;
         }
         header {
+            padding: 6rem 1.5rem 3.5rem;
             text-align: center;
-            padding: 3rem 1rem 2rem;
         }
         header h1 {
-            font-size: clamp(2.5rem, 5vw, 3rem);
-            margin-bottom: 0.5rem;
+            font-size: clamp(2.6rem, 5vw, 3.4rem);
+            margin: 0 0 1rem;
         }
         header p {
-            color: #b5c3ff;
-            margin: 0;
+            margin: 0 auto;
+            max-width: 640px;
+            color: rgba(244, 246, 255, 0.75);
             font-size: 1.05rem;
         }
+        .content {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+            display: grid;
+            gap: 5rem;
+        }
+        section {
+            display: grid;
+            gap: 2rem;
+        }
+        .scanner-section {
+            margin-top: 0;
+        }
         .panel {
-            background: rgba(15, 22, 48, 0.85);
-            border-radius: 16px;
-            border: 1px solid rgba(120, 140, 255, 0.25);
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.35);
-            padding: 2rem;
+            background: var(--surface-dark);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--surface-border-dark);
+            box-shadow: var(--shadow-dark);
+            padding: 2.75rem 3rem;
+            max-width: 780px;
+            margin: 0 auto;
         }
         form {
             display: grid;
-            gap: 1rem;
+            gap: 1.5rem;
+            text-align: left;
         }
         label {
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.08em;
-            color: #9caeff;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: rgba(199, 206, 255, 0.85);
+            font-weight: 600;
         }
         input[type="url"] {
-            padding: 0.85rem 1rem;
-            border-radius: 10px;
+            padding: 1rem 1.15rem;
+            border-radius: 12px;
             border: 1px solid rgba(120, 140, 255, 0.35);
-            background: rgba(12, 17, 38, 0.9);
+            background: rgba(12, 17, 38, 0.92);
             color: #f4f6ff;
             font-size: 1rem;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+        input[type="url"]::placeholder {
+            color: rgba(203, 211, 255, 0.5);
+        }
+        input[type="url"]:focus {
+            outline: none;
+            border-color: rgba(151, 167, 255, 0.8);
+            box-shadow: 0 0 0 4px rgba(99, 122, 255, 0.18);
         }
         button {
-            padding: 0.95rem 1.5rem;
+            padding: 0.95rem 2.4rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            background: linear-gradient(135deg, #6c63ff, #8a7bff);
+            letter-spacing: 0.04em;
+            background: var(--accent);
             color: #fff;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
         }
         button:hover:not(:disabled) {
             transform: translateY(-1px);
-            filter: brightness(1.1);
+            background: var(--accent-hover);
+            box-shadow: 0 18px 36px rgba(37, 99, 235, 0.28);
         }
         button:disabled {
             cursor: not-allowed;
-            opacity: 0.7;
+            opacity: 0.6;
+            box-shadow: none;
+            transform: none;
         }
         .status {
             min-height: 1.25rem;
             font-size: 0.95rem;
-            color: #d6defc;
+            color: #8ea8ff;
         }
-        .results {
-            margin-top: 2.5rem;
+        .feature-section {
+            gap: 2.5rem;
+        }
+        .section-heading {
             display: grid;
-            gap: 1.5rem;
+            gap: 0.75rem;
+            max-width: 720px;
         }
-        .results h2 {
+        .section-title {
+            font-size: clamp(1.65rem, 3vw, 2.1rem);
             margin: 0;
-            font-size: 1.5rem;
         }
-        .metadata {
-            display: grid;
-            gap: 0.35rem;
-            font-size: 0.95rem;
-            color: #c4cdfc;
+        .section-subtitle {
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(223, 227, 255, 0.75);
+            max-width: 640px;
         }
-        .cards {
+        .feature-grid {
             display: grid;
-            gap: 1rem;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+        .feature-card {
+            background: var(--surface-dark);
+            border: 1px solid var(--surface-border-dark);
+            border-radius: var(--radius-md);
+            box-shadow: 0 22px 45px rgba(6, 12, 31, 0.4);
+            padding: 2.4rem 2.1rem;
+        }
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(37, 99, 235, 0.18);
+            color: #aecdff;
+            font-size: 1.4rem;
+            margin-bottom: 1.35rem;
+        }
+        .feature-card h3 {
+            margin: 0 0 0.6rem;
+            font-size: 1.35rem;
+        }
+        .feature-card p {
+            margin: 0;
+            color: rgba(224, 229, 255, 0.78);
+        }
+        .results-section {
+            gap: 2.25rem;
+        }
+        .results-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+        .meta-item {
+            background: var(--surface-dark);
+            border: 1px solid var(--surface-border-dark);
+            border-radius: var(--radius-md);
+            padding: 1.3rem 1.6rem;
+            box-shadow: 0 20px 40px rgba(6, 12, 31, 0.35);
+        }
+        .meta-label {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(199, 206, 255, 0.68);
+            margin-bottom: 0.45rem;
+        }
+        .meta-value {
+            font-weight: 600;
+            font-size: 1.05rem;
         }
         .export-actions {
             display: flex;
-            gap: 0.75rem;
             flex-wrap: wrap;
-            margin-top: 1rem;
+            gap: 0.75rem;
         }
         .export-actions button {
-            background: rgba(108, 99, 255, 0.15);
-            border: 1px solid rgba(108, 99, 255, 0.35);
-            color: #d6ddff;
+            background: rgba(37, 99, 235, 0.18);
+            border: 1px solid rgba(37, 99, 235, 0.45);
+            color: #ccd9ff;
+            text-transform: none;
+            font-weight: 600;
+            padding: 0.85rem 1.5rem;
         }
-        .export-actions button:hover:not(:disabled) {
-            background: rgba(108, 99, 255, 0.3);
+        .cards {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         }
         .card {
-            border-radius: 12px;
-            border: 1px solid rgba(120, 140, 255, 0.3);
-            background: rgba(19, 28, 58, 0.9);
-            padding: 1.25rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--surface-border-dark);
+            background: var(--surface-dark);
+            padding: 1.9rem 1.7rem;
+            box-shadow: 0 24px 48px rgba(6, 12, 31, 0.42);
         }
         .card h3 {
-            margin: 0 0 0.4rem;
-            font-size: 1.2rem;
+            margin: 0 0 0.75rem;
+            font-size: 1.4rem;
         }
-        .muted {
-            color: #9ba6dd;
+        .card p {
+            margin: 0 0 0.6rem;
+            color: rgba(224, 229, 255, 0.8);
         }
-        footer {
-            margin-top: 3rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #7e8dbf;
+        .card p:last-child {
+            margin-bottom: 0;
         }
         .theme-toggle {
             position: fixed;
-            top: 1.25rem;
-            right: 1.25rem;
-            padding: 0.6rem 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.65rem 1.15rem;
             font-size: 0.85rem;
             letter-spacing: 0.04em;
-            z-index: 100;
-            background: rgba(17, 30, 63, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            color: #dfe3ff;
+            z-index: 120;
+            background: rgba(18, 30, 57, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            color: #e1e6ff;
             text-transform: none;
         }
         .theme-toggle:hover:not(:disabled) {
-            background: rgba(108, 99, 255, 0.45);
+            background: rgba(37, 99, 235, 0.35);
+        }
+        footer {
+            padding: 3rem 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(223, 227, 255, 0.68);
+            border-top: 1px solid rgba(120, 140, 255, 0.14);
+            margin-top: 6rem;
+        }
+        footer a {
+            color: inherit;
+            text-decoration: underline;
+        }
+        @media (max-width: 720px) {
+            .panel {
+                padding: 2.25rem 1.75rem;
+            }
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+            }
         }
         body.light-theme {
-            background: radial-gradient(circle at top, #f7f8ff 0%, #e4e7fb 60%, #d6dbf5 100%);
-            color: #1a1d2f;
+            background: #f7f8ff;
+            color: #0f172a;
         }
         body.light-theme header {
-            background: linear-gradient(135deg, #e7ebff, #f4f6ff);
-            color: #20243a;
+            background: #f6f8ff;
+            color: #0f172a;
         }
         body.light-theme header p {
-            color: #3b4060;
+            color: #47516f;
         }
         body.light-theme .panel {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(91, 108, 202, 0.25);
-            color: #1a1d2f;
+            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12);
+        }
+        body.light-theme label {
+            color: #475569;
         }
         body.light-theme input[type="url"] {
-            background: rgba(255, 255, 255, 0.95);
-            color: #1a1d2f;
-            border: 1px solid rgba(91, 108, 202, 0.35);
+            background: #f8faff;
+            border-color: rgba(15, 23, 42, 0.1);
+            color: #0f172a;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
         }
-        body.light-theme button {
-            background: linear-gradient(135deg, #6c63ff, #4e91ff);
-            color: #fff;
+        body.light-theme input[type="url"]:focus {
+            border-color: rgba(37, 99, 235, 0.6);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
+        }
+        body.light-theme .feature-card,
+        body.light-theme .meta-item,
+        body.light-theme .card {
+            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 22px 48px rgba(15, 23, 42, 0.08);
+        }
+        body.light-theme .feature-card p,
+        body.light-theme .card p {
+            color: #475569;
+        }
+        body.light-theme .feature-icon {
+            background: rgba(37, 99, 235, 0.12);
+            color: #2563eb;
+        }
+        body.light-theme .section-subtitle {
+            color: #556080;
+        }
+        body.light-theme .meta-label {
+            color: #64748b;
+        }
+        body.light-theme .meta-value {
+            color: #0f172a;
         }
         body.light-theme .export-actions button {
-            background: rgba(108, 99, 255, 0.12);
-            border: 1px solid rgba(108, 99, 255, 0.4);
-            color: #303d64;
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.28);
+            color: #1d4ed8;
         }
-        body.light-theme .card {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(120, 140, 255, 0.2);
-            color: #1e2134;
-        }
-        body.light-theme .muted {
-            color: #4a4e68;
-        }
-        body.light-theme footer {
-            color: #455279;
+        body.light-theme .status {
+            color: #2563eb;
         }
         body.light-theme .theme-toggle {
-            background: rgba(235, 238, 255, 0.95);
-            color: #2f3a5b;
-            border: 1px solid rgba(90, 107, 196, 0.4);
+            background: rgba(37, 99, 235, 0.08);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.18);
+        }
+        body.light-theme footer {
+            color: #64748b;
+            border-top-color: rgba(15, 23, 42, 0.08);
         }
     </style>
 </head>
@@ -313,6 +457,24 @@
             const [isLoading, setIsLoading] = useState(false);
             const [scanResult, setScanResult] = useState(null);
 
+            const featureHighlights = [
+                {
+                    title: 'Live Tech Discovery',
+                    description: 'Instantly reveal the frameworks, platforms, and services that power any public website.',
+                    icon: '🔍',
+                },
+                {
+                    title: 'Security Awareness',
+                    description: 'Surface hosting layers, CDNs, and risk advisories so teams can prioritise follow-up quickly.',
+                    icon: '🛡️',
+                },
+                {
+                    title: 'Shareable Reports',
+                    description: 'Export JSON or CSV snapshots in a click to brief clients, teammates, or stakeholders.',
+                    icon: '📤',
+                },
+            ];
+
             useEffect(() => {
                 if (typeof document !== 'undefined') {
                     document.body.classList.toggle('light-theme', theme === 'light');
@@ -396,6 +558,22 @@
 
             const themeButtonLabel = theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme';
 
+            const featureSection = e('section', { className: 'feature-section', key: 'feature-section' }, [
+                e('div', { className: 'section-heading', key: 'heading' }, [
+                    e('h2', { className: 'section-title', key: 'title' }, 'Why teams choose TechPrint'),
+                    e('p', { className: 'section-subtitle', key: 'copy' }, 'Translate any public URL into a clear picture of its technology stack, supporting faster research, audits, and client deliverables.'),
+                ]),
+                e('div', { className: 'feature-grid', key: 'grid' },
+                    featureHighlights.map((feature) =>
+                        e('article', { className: 'feature-card', key: feature.title }, [
+                            e('span', { className: 'feature-icon', key: 'icon', 'aria-hidden': 'true' }, feature.icon),
+                            e('h3', { key: 'heading' }, feature.title),
+                            e('p', { key: 'copy' }, feature.description),
+                        ])
+                    )
+                ),
+            ]);
+
             const detections = scanResult && Array.isArray(scanResult.detected_technologies)
                 ? scanResult.detected_technologies
                 : [];
@@ -404,7 +582,7 @@
                 : {};
 
             const resultCards = detections.length
-                ? detections.map((tech) => e('article', { className: 'card', key: tech.name || tech.category || Math.random() }, [
+                ? detections.map((tech) => e('article', { className: 'card detection-card', key: tech.name || tech.category || Math.random() }, [
                     e('h3', { key: 'name' }, tech.name || 'Unknown'),
                     e('p', { key: 'category', className: 'muted' },
                         (tech.category || 'Unknown category') + ' • Confidence: ' + (tech.confidence != null ? tech.confidence : 'N/A') + '%' 
@@ -420,36 +598,52 @@
                 : [e('p', { className: 'muted', key: 'empty' }, 'No technologies detected.')];
 
             const resultSection = scanResult
-                ? e('section', { className: 'results' }, [
-                    e('h2', { key: 'heading' }, 'Scan Results'),
-                    e('div', { key: 'meta', className: 'metadata' }, [
-                        e('span', { key: 'url' }, [
-                            e('strong', { key: 'label' }, 'Target URL: '),
-                            metadata.target_url || 'Unknown',
+                ? (() => {
+                    const metaItems = [
+                        { label: 'Target URL', value: metadata.target_url || 'Unknown', key: 'target' },
+                        metadata.resolved_url && metadata.resolved_url !== metadata.target_url
+                            ? { label: 'Resolved URL', value: metadata.resolved_url, key: 'resolved' }
+                            : null,
+                        { label: 'Status Code', value: metadata.status_code || 'N/A', key: 'status' },
+                        { label: 'Detected Technologies', value: detections.length, key: 'detections' },
+                        { label: 'Scan Timestamp', value: metadata.scan_timestamp_utc || 'N/A', key: 'timestamp' },
+                        metadata.script_sources_fetched
+                            ? {
+                                  label: 'Scripts Inspected',
+                                  value: metadata.script_sources_fetched.length,
+                                  key: 'scripts',
+                              }
+                            : null,
+                    ].filter(Boolean);
+
+                    return e('section', { className: 'results-section', key: 'results-section' }, [
+                        e('div', { className: 'section-heading', key: 'heading' }, [
+                            e('h2', { className: 'section-title', key: 'title' }, 'Scan Results'),
+                            e('p', { className: 'section-subtitle', key: 'subtitle' }, 'Review detected technologies, review metadata, and share the findings with your team.'),
                         ]),
-                        e('span', { key: 'status' }, [
-                            e('strong', { key: 'label' }, 'Status Code: '),
-                            metadata.status_code || 'N/A',
-                        ]),
-                        e('span', { key: 'timestamp' }, [
-                            e('strong', { key: 'label' }, 'Scan Timestamp: '),
-                            metadata.scan_timestamp_utc || 'N/A',
-                        ]),
-                    ]),
-                    e('div', { key: 'exports', className: 'export-actions' }, [
-                        e('button', {
-                            key: 'json',
-                            type: 'button',
-                            onClick: () => handleDownload('json'),
-                        }, 'Download JSON'),
+                        e('div', { className: 'results-meta', key: 'meta' },
+                            metaItems.map((item) =>
+                                e('div', { className: 'meta-item', key: item.key }, [
+                                    e('span', { className: 'meta-label', key: 'label' }, item.label),
+                                    e('span', { className: 'meta-value', key: 'value' }, item.value),
+                                ])
+                            )
+                        ),
+                        e('div', { className: 'export-actions', key: 'exports' }, [
+                            e('button', {
+                                key: 'json',
+                                type: 'button',
+                                onClick: () => handleDownload('json'),
+                            }, 'Download JSON'),
                         e('button', {
                             key: 'csv',
                             type: 'button',
-                            onClick: () => handleDownload('csv'),
-                        }, 'Download CSV'),
-                    ]),
-                    e('div', { key: 'cards', className: 'cards' }, resultCards),
-                ])
+                                onClick: () => handleDownload('csv'),
+                            }, 'Download CSV'),
+                        ]),
+                        e('div', { className: 'cards', key: 'cards' }, resultCards),
+                    ]);
+                })()
                 : null;
 
             return e(React.Fragment, null,
@@ -459,31 +653,36 @@
                     type: 'button',
                     onClick: handleThemeToggle,
                 }, themeButtonLabel),
-                e('header', null, [
+                e('header', { className: 'hero' }, [
                     e('h1', { key: 'title' }, 'TechPrint'),
-                    e('p', { key: 'tagline' }, 'Live web technology fingerprinting powered by a Node.js scanning service.'),
+                    e('p', { key: 'tagline' }, 'Fingerprint any website in seconds. Surface frameworks, infrastructure, analytics, and risk signals to support audits and go-to-market research.'),
                 ]),
-                e('div', { className: 'panel' },
-                    e('form', { onSubmit: handleSubmit }, [
-                        e('label', { htmlFor: 'url', key: 'label' }, 'Website URL'),
-                        e('input', {
-                            id: 'url',
-                            key: 'input',
-                            type: 'url',
-                            placeholder: 'https://example.com',
-                            value: url,
-                            required: true,
-                            onChange: function onChange(event) {
-                                setUrl(event.target.value);
-                            },
-                        }),
-                        e('button', { key: 'button', type: 'submit', disabled: isLoading },
-                            isLoading ? 'Scanning…' : 'Run Scan'
+                e('main', { className: 'content' }, [
+                    e('section', { className: 'scanner-section', key: 'scanner' }, [
+                        e('div', { className: 'panel', key: 'panel' },
+                            e('form', { onSubmit: handleSubmit }, [
+                                e('label', { htmlFor: 'url', key: 'label' }, 'Website URL'),
+                                e('input', {
+                                    id: 'url',
+                                    key: 'input',
+                                    type: 'url',
+                                    placeholder: 'https://example.com',
+                                    value: url,
+                                    required: true,
+                                    onChange: function onChange(event) {
+                                        setUrl(event.target.value);
+                                    },
+                                }),
+                                e('button', { key: 'button', type: 'submit', disabled: isLoading },
+                                    isLoading ? 'Scanning…' : 'Run Scan'
+                                ),
+                                e('div', { key: 'status', className: 'status' }, status),
+                            ])
                         ),
-                        e('div', { key: 'status', className: 'status' }, status),
-                    ])
-                ),
-                resultSection,
+                    ]),
+                    featureSection,
+                    resultSection,
+                ]),
                 e('footer', null, [
                     'Made with love by ',
                     e('a', { key: 'link', href: 'https://compasiq.com', target: '_blank', rel: 'noopener noreferrer' }, 'CompasIQ Team'),
