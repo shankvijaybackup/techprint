@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: techprint
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true

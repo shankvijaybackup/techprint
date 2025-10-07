@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechPrint - Live Web Technology Scanner</title>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #1a2238 0%, #0c1024 50%, #080a18 100%);
+            color: #f4f6ff;
+            min-height: 100vh;
+        }
+        a {
+            color: #8bb9ff;
+        }
+        #root {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+        header {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+        }
+        header h1 {
+            font-size: clamp(2.5rem, 5vw, 3rem);
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            color: #b5c3ff;
+            margin: 0;
+            font-size: 1.05rem;
+        }
+        .panel {
+            background: rgba(15, 22, 48, 0.85);
+            border-radius: 16px;
+            border: 1px solid rgba(120, 140, 255, 0.25);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.35);
+            padding: 2rem;
+        }
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+        label {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            color: #9caeff;
+        }
+        input[type="url"] {
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(120, 140, 255, 0.35);
+            background: rgba(12, 17, 38, 0.9);
+            color: #f4f6ff;
+            font-size: 1rem;
+        }
+        button {
+            padding: 0.95rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: linear-gradient(135deg, #6c63ff, #8a7bff);
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .status {
+            min-height: 1.25rem;
+            font-size: 0.95rem;
+            color: #d6defc;
+        }
+        .results {
+            margin-top: 2.5rem;
+            display: grid;
+            gap: 1.5rem;
+        }
+        .results h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .metadata {
+            display: grid;
+            gap: 0.35rem;
+            font-size: 0.95rem;
+            color: #c4cdfc;
+        }
+        .cards {
+            display: grid;
+            gap: 1rem;
+        }
+        .export-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .export-actions button {
+            background: rgba(108, 99, 255, 0.15);
+            border: 1px solid rgba(108, 99, 255, 0.35);
+            color: #d6ddff;
+        }
+        .export-actions button:hover:not(:disabled) {
+            background: rgba(108, 99, 255, 0.3);
+        }
+        .card {
+            border-radius: 12px;
+            border: 1px solid rgba(120, 140, 255, 0.3);
+            background: rgba(19, 28, 58, 0.9);
+            padding: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+        .card h3 {
+            margin: 0 0 0.4rem;
+            font-size: 1.2rem;
+        }
+        .muted {
+            color: #9ba6dd;
+        }
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7e8dbf;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            z-index: 100;
+            background: rgba(17, 30, 63, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: #dfe3ff;
+            text-transform: none;
+        }
+        .theme-toggle:hover:not(:disabled) {
+            background: rgba(108, 99, 255, 0.45);
+        }
+        body.light-theme {
+            background: radial-gradient(circle at top, #f7f8ff 0%, #e4e7fb 60%, #d6dbf5 100%);
+            color: #1a1d2f;
+        }
+        body.light-theme header {
+            background: linear-gradient(135deg, #e7ebff, #f4f6ff);
+            color: #20243a;
+        }
+        body.light-theme header p {
+            color: #3b4060;
+        }
+        body.light-theme .panel {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(91, 108, 202, 0.25);
+            color: #1a1d2f;
+        }
+        body.light-theme input[type="url"] {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a1d2f;
+            border: 1px solid rgba(91, 108, 202, 0.35);
+        }
+        body.light-theme button {
+            background: linear-gradient(135deg, #6c63ff, #4e91ff);
+            color: #fff;
+        }
+        body.light-theme .export-actions button {
+            background: rgba(108, 99, 255, 0.12);
+            border: 1px solid rgba(108, 99, 255, 0.4);
+            color: #303d64;
+        }
+        body.light-theme .card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(120, 140, 255, 0.2);
+            color: #1e2134;
+        }
+        body.light-theme .muted {
+            color: #4a4e68;
+        }
+        body.light-theme footer {
+            color: #455279;
+        }
+        body.light-theme .theme-toggle {
+            background: rgba(235, 238, 255, 0.95);
+            color: #2f3a5b;
+            border: 1px solid rgba(90, 107, 196, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script>
+        const { useState, useEffect } = React;
+        const e = React.createElement;
+
+        const apiOrigin = (typeof window !== 'undefined' && window.location && typeof window.location.origin === 'string' && window.location.origin.indexOf('http') === 0)
+            ? window.location.origin
+            : 'http://localhost:3001';
+        const API_ENDPOINT = apiOrigin + '/api/scan';
+        const THEME_STORAGE_KEY = 'techprint-theme';
+
+        function getInitialTheme() {
+            if (typeof window === 'undefined') {
+                return 'dark';
+            }
+
+            try {
+                const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+                if (stored === 'light' || stored === 'dark') {
+                    return stored;
+                }
+            } catch (error) {
+                // Ignore storage access issues.
+            }
+
+            if (typeof window.matchMedia === 'function') {
+                try {
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        return 'dark';
+                    }
+                } catch (error) {
+                    // Ignore matchMedia issues.
+                }
+            }
+
+            return 'light';
+        }
+
+        function sanitiseFilenameSegment(text) {
+            return String(text || '')
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9-_]+/g, '-')
+                .replace(/^-+|-+$/g, '') || 'techprint';
+        }
+
+        function downloadFile(content, mimeType, filename) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = filename;
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            URL.revokeObjectURL(url);
+        }
+
+        function convertScanToCsv(result) {
+            const rows = [];
+            rows.push(['type', 'name', 'category', 'confidence', 'version', 'risk']);
+
+            const metadata = result && result.scan_metadata ? result.scan_metadata : {};
+            Object.entries(metadata).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    value = value.join('; ');
+                } else if (value && typeof value === 'object') {
+                    value = JSON.stringify(value);
+                }
+                rows.push(['metadata', key, value || '', '', '', '']);
+            });
+
+            const detections = result && Array.isArray(result.detected_technologies)
+                ? result.detected_technologies
+                : [];
+
+            detections.forEach((tech) => {
+                rows.push([
+                    'detection',
+                    tech.name || '',
+                    tech.category || '',
+                    tech.confidence != null ? tech.confidence : '',
+                    tech.version || '',
+                    tech.risk || '',
+                ]);
+            });
+
+            return rows
+                .map((row) =>
+                    row
+                        .map((cell) => {
+                            const stringValue = String(cell ?? '');
+                            return `"${stringValue.replace(/"/g, '""')}"`;
+                        })
+                        .join(',')
+                )
+                .join('\n');
+        }
+
+        function TechPrintApp() {
+            const [theme, setTheme] = useState(() => getInitialTheme());
+            const [url, setUrl] = useState('');
+            const [status, setStatus] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [scanResult, setScanResult] = useState(null);
+
+            useEffect(() => {
+                if (typeof document !== 'undefined') {
+                    document.body.classList.toggle('light-theme', theme === 'light');
+                }
+                if (typeof window !== 'undefined') {
+                    try {
+                        window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+                    } catch (error) {
+                        // Ignore storage persistence issues.
+                    }
+                }
+            }, [theme]);
+
+            const handleThemeToggle = () => {
+                setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
+            };
+
+            const handleSubmit = async (event) => {
+                event.preventDefault();
+
+                const trimmed = url.trim();
+                if (!trimmed) {
+                    setStatus('Enter a URL to scan.');
+                    setScanResult(null);
+                    return;
+                }
+
+                setStatus('Scanning...');
+                setIsLoading(true);
+                setScanResult(null);
+
+                try {
+                    const response = await fetch(API_ENDPOINT + '?url=' + encodeURIComponent(trimmed));
+                    if (!response.ok) {
+                        let errorPayload = {};
+                        try {
+                            errorPayload = await response.json();
+                        } catch (parseError) {
+                            // ignore JSON parse failures
+                        }
+                        throw new Error(errorPayload.error || ('Unexpected response (' + response.status + ')'));
+                    }
+
+                    const data = await response.json();
+                    setScanResult(data);
+                    setStatus('Scan completed successfully.');
+                } catch (error) {
+                    setStatus('Scan failed: ' + error.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleDownload = (format) => {
+                if (!scanResult) {
+                    return;
+                }
+
+                const metadata = scanResult.scan_metadata || {};
+
+                let host = 'techprint';
+                if (metadata.target_url) {
+                    try {
+                        host = sanitiseFilenameSegment(new URL(metadata.target_url).hostname);
+                    } catch (error) {
+                        host = sanitiseFilenameSegment(metadata.target_url);
+                    }
+                }
+
+                const timestamp = sanitiseFilenameSegment(metadata.scan_timestamp_utc || new Date().toISOString());
+                const baseName = `${host || 'techprint'}_${timestamp || 'scan'}`;
+
+                if (format === 'json') {
+                    const content = JSON.stringify(scanResult, null, 2);
+                    downloadFile(content, 'application/json', `${baseName}.json`);
+                } else if (format === 'csv') {
+                    const content = convertScanToCsv(scanResult);
+                    downloadFile(content, 'text/csv', `${baseName}.csv`);
+                }
+            };
+
+            const themeButtonLabel = theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme';
+
+            const detections = scanResult && Array.isArray(scanResult.detected_technologies)
+                ? scanResult.detected_technologies
+                : [];
+            const metadata = scanResult && typeof scanResult === 'object'
+                ? (scanResult.scan_metadata || {})
+                : {};
+
+            const resultCards = detections.length
+                ? detections.map((tech) => e('article', { className: 'card', key: tech.name || tech.category || Math.random() }, [
+                    e('h3', { key: 'name' }, tech.name || 'Unknown'),
+                    e('p', { key: 'category', className: 'muted' },
+                        (tech.category || 'Unknown category') + ' • Confidence: ' + (tech.confidence != null ? tech.confidence : 'N/A') + '%' 
+                    ),
+                    e('p', { key: 'version', className: 'muted' }, 'Version: ' + (tech.version || 'Unknown')),
+                    tech.risk
+                        ? e('p', { key: 'risk', className: 'muted' }, [
+                            e('strong', { key: 'label' }, 'Risk Guidance: '),
+                            tech.risk,
+                        ])
+                        : null,
+                ]))
+                : [e('p', { className: 'muted', key: 'empty' }, 'No technologies detected.')];
+
+            const resultSection = scanResult
+                ? e('section', { className: 'results' }, [
+                    e('h2', { key: 'heading' }, 'Scan Results'),
+                    e('div', { key: 'meta', className: 'metadata' }, [
+                        e('span', { key: 'url' }, [
+                            e('strong', { key: 'label' }, 'Target URL: '),
+                            metadata.target_url || 'Unknown',
+                        ]),
+                        e('span', { key: 'status' }, [
+                            e('strong', { key: 'label' }, 'Status Code: '),
+                            metadata.status_code || 'N/A',
+                        ]),
+                        e('span', { key: 'timestamp' }, [
+                            e('strong', { key: 'label' }, 'Scan Timestamp: '),
+                            metadata.scan_timestamp_utc || 'N/A',
+                        ]),
+                    ]),
+                    e('div', { key: 'exports', className: 'export-actions' }, [
+                        e('button', {
+                            key: 'json',
+                            type: 'button',
+                            onClick: () => handleDownload('json'),
+                        }, 'Download JSON'),
+                        e('button', {
+                            key: 'csv',
+                            type: 'button',
+                            onClick: () => handleDownload('csv'),
+                        }, 'Download CSV'),
+                    ]),
+                    e('div', { key: 'cards', className: 'cards' }, resultCards),
+                ])
+                : null;
+
+            return e(React.Fragment, null,
+                e('button', {
+                    key: 'theme-toggle',
+                    className: 'theme-toggle',
+                    type: 'button',
+                    onClick: handleThemeToggle,
+                }, themeButtonLabel),
+                e('header', null, [
+                    e('h1', { key: 'title' }, 'TechPrint'),
+                    e('p', { key: 'tagline' }, 'Live web technology fingerprinting powered by a Node.js scanning service.'),
+                ]),
+                e('div', { className: 'panel' },
+                    e('form', { onSubmit: handleSubmit }, [
+                        e('label', { htmlFor: 'url', key: 'label' }, 'Website URL'),
+                        e('input', {
+                            id: 'url',
+                            key: 'input',
+                            type: 'url',
+                            placeholder: 'https://example.com',
+                            value: url,
+                            required: true,
+                            onChange: function onChange(event) {
+                                setUrl(event.target.value);
+                            },
+                        }),
+                        e('button', { key: 'button', type: 'submit', disabled: isLoading },
+                            isLoading ? 'Scanning…' : 'Run Scan'
+                        ),
+                        e('div', { key: 'status', className: 'status' }, status),
+                    ])
+                ),
+                resultSection,
+                e('footer', null, [
+                    'Made with love by ',
+                    e('a', { key: 'link', href: 'https://compasiq.com', target: '_blank', rel: 'noopener noreferrer' }, 'CompasIQ Team'),
+                    '.',
+                ]),
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(e(TechPrintApp));
+    </script>
+</body>
+</html>
